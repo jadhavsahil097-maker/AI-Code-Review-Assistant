@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Review Result</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <div class="header">
+
+        <div class="icon">
+            🤖
+        </div>
+
+        <h1>
+            Code Review Result
+        </h1>
+
+        <p>
+            AI-Based Python Code Analysis
+        </p>
+
+    </div>
+
+
+    <!-- SCORE -->
+
+    <div class="score-card">
+
+        <h2>
+            📊 Code Quality Score
+        </h2>
+
+        <div class="score">
+
+            {{ quality_score }}/100
+
+        </div>
+
+        <h3>
+            {{ quality_status }}
+        </h3>
+
+        <p>
+            Detected Issues:
+            <strong>{{ issue_count }}</strong>
+        </p>
+
+    </div>
+
+
+    <!-- SUBMITTED CODE -->
+
+    <div class="card">
+
+        <h2>
+            💻 Submitted Code
+        </h2>
+
+        <pre class="code-box">{{ code }}</pre>
+
+    </div>
+
+
+    <!-- PYLINT -->
+
+    <div class="card">
+
+        <h2>
+            📋 Static Analysis
+        </h2>
+
+
+        {% if output.strip() %}
+
+        <pre class="analysis-box">{{ output }}</pre>
+
+        {% else %}
+
+        <div class="success">
+
+            ✅ No static analysis issues found.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- SECURITY -->
+
+    <div class="card">
+
+        <h2>
+            🔐 Security Analysis
+        </h2>
+
+
+        <div class="stats">
+
+            <div class="stat">
+
+                🔴 Critical
+
+                <strong>
+                    {{ security_result.get("critical", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                🟠 Moderate
+
+                <strong>
+                    {{ security_result.get("moderate", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                🟢 Minor
+
+                <strong>
+                    {{ security_result.get("minor", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                📊 Total
+
+                <strong>
+                    {{ security_result.get("total", 0) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        {% for issue in security_result.get("issues", []) %}
+
+        <div class="issue">
+
+            <h3>
+                🔐 {{ issue.get("title") }}
+            </h3>
+
+            <p>
+                <strong>Severity:</strong>
+                {{ issue.get("severity") }}
+            </p>
+
+            <p>
+                <strong>Line:</strong>
+                {{ issue.get("line") }}
+            </p>
+
+            <p>
+                <strong>Description:</strong>
+                {{ issue.get("description") }}
+            </p>
+
+            <p>
+                <strong>Suggestion:</strong>
+                {{ issue.get("suggestion") }}
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+
+        {% if not security_result.get("issues") %}
+
+        <div class="success">
+
+            ✅ No common security issues found.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- PERFORMANCE -->
+
+    <div class="card">
+
+        <h2>
+            ⚡ Performance Analysis
+        </h2>
+
+
+        <div class="stats">
+
+            <div class="stat">
+
+                🔴 Critical
+
+                <strong>
+                    {{ performance_result.get("critical", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                🟠 Moderate
+
+                <strong>
+                    {{ performance_result.get("moderate", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                🟢 Minor
+
+                <strong>
+                    {{ performance_result.get("minor", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                📊 Total
+
+                <strong>
+                    {{ performance_result.get("total", 0) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        {% for issue in performance_result.get("issues", []) %}
+
+        <div class="issue">
+
+            <h3>
+                ⚡ {{ issue.get("title") }}
+            </h3>
+
+            <p>
+                <strong>Severity:</strong>
+                {{ issue.get("severity") }}
+            </p>
+
+            <p>
+                <strong>Line:</strong>
+                {{ issue.get("line") }}
+            </p>
+
+            <p>
+                <strong>Description:</strong>
+                {{ issue.get("description") }}
+            </p>
+
+            <p>
+                <strong>Suggestion:</strong>
+                {{ issue.get("suggestion") }}
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+
+        {% if not performance_result.get("issues") %}
+
+        <div class="success">
+
+            ✅ No common performance issues found.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- CODE SMELL -->
+
+    <div class="card">
+
+        <h2>
+            🧹 Code Smell Analysis
+        </h2>
+
+
+        <div class="stats">
+
+            <div class="stat">
+
+                🔴 Critical
+
+                <strong>
+                    {{ code_smell_result.get("critical", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                🟠 Moderate
+
+                <strong>
+                    {{ code_smell_result.get("moderate", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                🟢 Minor
+
+                <strong>
+                    {{ code_smell_result.get("minor", 0) }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                📊 Total
+
+                <strong>
+                    {{ code_smell_result.get("total", 0) }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        {% for issue in code_smell_result.get("issues", []) %}
+
+        <div class="issue">
+
+            <h3>
+                🧹 {{ issue.get("title") }}
+            </h3>
+
+            <p>
+                <strong>Severity:</strong>
+                {{ issue.get("severity") }}
+            </p>
+
+            <p>
+                <strong>Line:</strong>
+                {{ issue.get("line") }}
+            </p>
+
+            <p>
+                <strong>Description:</strong>
+                {{ issue.get("description") }}
+            </p>
+
+            <p>
+                <strong>Suggestion:</strong>
+                {{ issue.get("suggestion") }}
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+
+        {% if not code_smell_result.get("issues") %}
+
+        <div class="success">
+
+            ✅ No common code smells found.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- AI REVIEW -->
+
+    <div class="card">
+
+        <h2>
+            🤖 AI Review
+        </h2>
+
+
+        {% if ai_result.get("status") == "success" %}
+
+
+        {% set review = ai_result.get("result", {}) %}
+
+
+        <div class="ai-score">
+
+            AI Score:
+
+            <strong>
+               {{ review.get("score", "N/A") }}/100
+            </strong>
+
+        </div>
+
+
+        <div class="success">
+
+            <strong>
+                📝 Summary
+            </strong>
+
+            <p>
+                {{ review.get(
+    "summary",
+    "No summary available."
+) }}
+            </p>
+
+        </div>
+
+
+        <h2>
+            🚨 AI Detected Issues
+        </h2>
+
+
+        {% for issue in review.get("issues", []) %}
+
+
+        <div class="issue">
+
+            <h3>
+                {{ loop.index }}.
+                {{ issue.get("title", "Issue") }}
+            </h3>
+
+            <p>
+                <strong>Category:</strong>
+                {{ issue.get("category", "N/A") }}
+            </p>
+
+            <p>
+                <strong>Severity:</strong>
+                {{ issue.get("severity", "N/A") }}
+            </p>
+
+            <p>
+                <strong>Line:</strong>
+                {{ issue.get("line", "N/A") }}
+            </p>
+
+            <p>
+                <strong>Description:</strong>
+                {{ issue.get("description", "N/A") }}
+            </p>
+
+            <p>
+                <strong>Impact:</strong>
+                {{ issue.get("impact", "N/A") }}
+            </p>
+
+            <p>
+                <strong>💡 Suggested Fix:</strong>
+                {{ issue.get("suggestion", "N/A") }}
+            </p>
+
+
+            {% if issue.get("corrected_code") %}
+
+            <h4>
+                ✅ Corrected Code
+            </h4>
+
+            <pre class="code-box">
+{{ issue.get("corrected_code") }}
+            </pre>
+
+            {% endif %}
+
+        </div>
+
+
+        {% endfor %}
+
+
+       {% if review.get("corrected_code") %}
+
+        <h2>
+            ✅ Complete Corrected Code
+        </h2>
+
+        <pre class="code-box">
+{{ review.get("corrected_code") }}
+        </pre>
+
+        {% endif %}
+
+
+        {% else %}
+
+
+        <div class="error">
+
+            ⚠️
+
+            {{ ai_result.get(
+                "message",
+                "AI review could not be completed."
+            ) }}
+
+        </div>
+
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="buttons">
+
+        <a href="/">
+            ← Review Another Code
+        </a>
+
+    </div>
+
+
+    <footer>
+
+        AI-Based Code Review Assistant
+
+    </footer>
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Review History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Review History</h1>
+
+        <p>
+            Previous code reviews stored in the database.
+        </p>
+
+        {% if reviews %}
+
+            {% for review in reviews %}
+
+                <div class="card">
+
+                    <h2>Review #{{ review[0] }}</h2>
+
+                    <p>
+                        <strong>Quality Score:</strong>
+                        {{ review[2] }}/100
+                    </p>
+
+                    <p>
+                        <strong>Total Issues:</strong>
+                        {{ review[3] }}
+                    </p>
+
+                    <p>
+                        <strong>Security Issues:</strong>
+                        {{ review[4] }}
+                    </p>
+
+                    <p>
+                        <strong>Performance Issues:</strong>
+                        {{ review[5] }}
+                    </p>
+
+                    <p>
+                        <strong>Code Smells:</strong>
+                        {{ review[6] }}
+                    </p>
+
+                    <p>
+                        <strong>AI Score:</strong>
+                        {{ review[7] }}/100
+                    </p>
+
+                    <p>
+                        <strong>AI Summary:</strong>
+                        {{ review[8] }}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        {{ review[10] }}
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="card">
+
+                <h2>No Reviews Found</h2>
+
+                <p>
+                    No code reviews have been stored yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+        <br>
+
+        <a href="/">
+            ← Review New Code
+        </a>
+
+    </div>
+
+</body>
+
+</html>
